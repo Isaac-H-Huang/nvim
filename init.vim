@@ -342,8 +342,8 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
 
 " Snippets
-" Plug 'SirVer/ultisnips'
-Plug 'theniceboy/vim-snippets'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 
 " Undo Tree
 Plug 'mbbill/undotree'
@@ -468,7 +468,20 @@ set re=0
 set lazyredraw
 "set regexpengine=1
 
-
+" ===
+" === Ultisnips
+" ===
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+let g:UltiSnipsSnippetDirectories = [$HOME.'/.config/nvim/Ultisnips/', $HOME.'/.config/nvim/plugged/vim-snippets/UltiSnips/']
+silent! au BufEnter,BufRead,BufNewFile * silent! unmap <c-r>
+" Solve extreme insert-mode lag on macOS (by disabling autotrigger)
+augroup ultisnips_no_auto_expansion
+    au!
+    au VimEnter * au! UltiSnips_AutoTrigger
+augroup END
+"
 " ===
 " === Dress up my vim
 " ===
@@ -526,6 +539,13 @@ autocmd vimenter * NERDTree
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+fun! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
 if has("autocmd")
     autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee,*.tcl,*.isu :call CleanExtraSpaces()
 endif
@@ -706,8 +726,8 @@ let g:VM_maps                       = {}
 let g:VM_custom_motions             = {'n': 'h', 'i': 'l', 'u': 'k', 'e': 'j', 'N': '0', 'I': '$', 'h': 'e'}
 let g:VM_maps['i']                  = 'k'
 let g:VM_maps['I']                  = 'K'
-let g:VM_maps['Find Under']         = '<C-k>'
-let g:VM_maps['Find Subword Under'] = '<C-k>'
+"let g:VM_maps['Find Under']         = '<C-k>'
+"let g:VM_maps['Find Subword Under'] = '<C-k>'
 let g:VM_maps['Find Next']          = ''
 let g:VM_maps['Find Prev']          = ''
 let g:VM_maps['Remove Region']      = 'q'
